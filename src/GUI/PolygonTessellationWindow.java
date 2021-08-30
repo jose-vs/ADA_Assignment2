@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Main;
+package GUI;
+
+import javax.swing.JPanel;
 
 /**
  *
  * @author jcvsa
  */
-public class main {
+public class PolygonTessellationWindow extends JPanel{
     
 }
