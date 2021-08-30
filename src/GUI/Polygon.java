@@ -12,8 +12,8 @@ package GUI;
 public class Polygon {
     private Point[] vertices; 
     
-    public Polygon() { 
-        createPolygon(); 
+    public Polygon(int numOfVertices) { 
+        createPolygon(numOfVertices); 
     }
     
     public Polygon(Point[] vertices){ 
@@ -25,7 +25,7 @@ public class Polygon {
     } 
     
     
-    public void createPolygon() { 
+    public void createPolygon(int numOfVertices) { 
         
     }
 }
