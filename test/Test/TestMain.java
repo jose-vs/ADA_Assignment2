@@ -6,6 +6,7 @@
 package Test;
 import static BruteForce.BruteForce.*;
 import GUI.Point;
+import GUI.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,10 +50,10 @@ public class TestMain {
         testList.add(new Point(3,3));
         testList.add(new Point(3,1));
         
+//        System.out.println(bf_tessellation(testList));
         
-        int[] testint = {1,2,3,4,5};
-        
-        System.out.println(bf_tesselation(testList));
-        
+        Polygon testPolygon = new Polygon(40,10,10);
+        System.out.println(testPolygon.toString());
+        System.out.println(bf_tessellation(testPolygon.getVertices()));
     }
 }
