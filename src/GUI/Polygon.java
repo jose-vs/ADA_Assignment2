@@ -7,6 +7,7 @@ package GUI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -17,6 +18,9 @@ import java.util.Random;
  */
 public class Polygon {
     private List<Point> vertices; 
+    
+    private double internalEdgeSum; 
+    private HashMap<Point,Point> internalEdges;
     
     private final Random RAND = new Random(); 
     
@@ -32,6 +36,15 @@ public class Polygon {
         return this.vertices;
     }
     
+    
+    
+    /** 
+     * Randomly generate points for a convex polygon 
+     * 
+     * @param numOfVertices     the number of vertices to generate
+     * @param height            y bound for the randomly generated point
+     * @param width             x bound for the randomly generated point
+     */
     public void createPolygon(int numOfVertices, int height, int width) { 
         List<Integer> xPool = new ArrayList<>(numOfVertices); 
         List<Integer> yPool = new ArrayList<>(numOfVertices); 

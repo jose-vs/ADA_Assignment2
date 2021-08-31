@@ -50,16 +50,11 @@ public class BruteForce {
                 internalEdgeSum += Math.sqrt((
                     Math.pow((vertices.get(k).getxPos() - vertices.get(start).getxPos()), 2) +
                     Math.pow((vertices.get(k).getyPos() - vertices.get(start).getyPos()), 2)));
-//                System.out.print("V1: ("+vertices.get(start).getxPos()+", "+vertices.get(start).getyPos()+") ");
-//                System.out.println("V2: ("+vertices.get(k).getxPos()+", "+vertices.get(k).getyPos()+")");
-
             }
             if(end - 1 > k) { 
                 internalEdgeSum += Math.sqrt((
                     Math.pow((vertices.get(k).getxPos() - vertices.get(end).getxPos()), 2) +
                     Math.pow((vertices.get(k).getyPos() - vertices.get(end).getyPos()), 2)));
-//                System.out.print("V1: ("+vertices.get(end).getxPos()+", "+vertices.get(end).getyPos()+") ");
-//                System.out.println("V2: ("+vertices.get(k).getxPos()+", "+vertices.get(k).getyPos()+")");
             }
             
             /**
