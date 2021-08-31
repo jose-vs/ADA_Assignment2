@@ -6,6 +6,8 @@
 package Test;
 import static BruteForce.BruteForce.*;
 import GUI.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -39,17 +41,18 @@ public class TestMain {
     
  
     public static void main(String[] args) {
-        Point[] test = {
-            new Point(1,2),
-            new Point(1,4),
-            new Point(2,5),
-            new Point(3,3), 
-            new Point(3,1), 
-        };
+        
+        List<Point> testList = new ArrayList<>();
+        testList.add(new Point(1,2));
+        testList.add(new Point(1,4));
+        testList.add(new Point(3,5));
+        testList.add(new Point(3,3));
+        testList.add(new Point(3,1));
+        
         
         int[] testint = {1,2,3,4,5};
         
-        System.out.println(bf_tesselation(test));
+        System.out.println(bf_tesselation(testList));
         
     }
 }
