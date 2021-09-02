@@ -4,10 +4,11 @@
  * and open the template in the editor.
  */
 package GUI;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -18,25 +19,112 @@ import java.util.Random;
  */
 public class Polygon {
     private List<Point> vertices; 
-    
-    private double internalEdgeSum; 
-    private HashMap<Point,Point> internalEdges;
-    
+    private int xBound, yBound; 
     private final Random RAND = new Random(); 
     
-    public Polygon(int numOfVertices, int height, int width) { 
+     /**
+     * Default Constructor
+     */
+    public Polygon() { 
+        vertices = new ArrayList<>();
+    }
+    
+    /**
+     * Constructor
+     * Creates a new randomized polygon based on the paramaters
+     * 
+     * @param numOfVertices         number of vertices
+     * @param height                y bound for the polygon
+     * @param width                 x bound for the polygon
+     */
+    public Polygon(int numOfVertices, int height, int width) {
         createPolygon(numOfVertices, height, width); 
     }
     
+    /**
+     * Constructor
+     * sets the local list of vertices
+     * 
+     * @param vertices 
+     */
     public Polygon(List<Point> vertices){ 
         this.vertices = vertices;
     }
+    
     
     public List<Point> getVertices() { 
         return this.vertices;
     }
     
+    public int getNumOfVertices() { 
+        return vertices.size();
+    }
     
+    /**
+     * retrieves an int array of the x coords from the vertices list
+     * 
+     * @return              xCoords array
+     */
+    public int[] getXCoords() { 
+        
+        /**
+         * only retrieve the list if vertices is not empty 
+         */
+        if(!vertices.isEmpty()) {
+            int xCoords[] = new int[vertices.size()]; 
+
+            Iterator it = vertices.iterator(); 
+            int index = 0;
+            
+            while (it.hasNext()){
+                Point p = (Point) it.next();
+                xCoords[index] = p.getxPos();
+                index++;
+            }
+                        
+            return xCoords; 
+            
+        } else 
+            return null;
+    }
+    
+    /**
+     * retrieves an int array of the y coords from the vertices list
+     * 
+     * @return              yCoords array
+     */
+    public int[] getYCoords() { 
+        
+        /**
+         * only retrieve the list if vertices is not empty 
+         */
+        if(!vertices.isEmpty()) { 
+            int[] yCoords = new int[vertices.size()]; 
+
+            Iterator it = vertices.iterator(); 
+            int index = 0;
+            
+            while (it.hasNext()){
+                Point p = (Point) it.next();
+                yCoords[index] = p.getyPos();
+                index++;
+            }
+
+            return yCoords;
+            
+        } else 
+            return null;
+    }
+    
+    /**
+     * draws the polygon without tessellations
+     * 
+     * @param g 
+     */
+    public void drawPolygon(Graphics g){ 
+        g.setColor(Color.WHITE);     
+        g.drawPolygon(getXCoords(), getYCoords(), getNumOfVertices());
+    }
     
     /** 
      * Randomly generate points for a convex polygon 
@@ -141,11 +229,12 @@ public class Polygon {
         this.vertices = points;
     }
     
+    @Override
     public String toString(){ 
         String s = "";
         int index = 0;
         
-        if (vertices.size() == 0) return "Polygon not Initialized";
+        if (vertices.isEmpty() || vertices == null) return "Polygon not Initialized";
         
         Iterator it = vertices.iterator(); 
         while (it.hasNext()) { 

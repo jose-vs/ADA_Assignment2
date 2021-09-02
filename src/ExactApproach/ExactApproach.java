@@ -19,7 +19,7 @@ public class ExactApproach {
         int n = vertices.size();
         double[][] memo = new double[n][n];
         
-        return dfs(vertices, 0, vertices.size() - 1, memo); 
+        return dfs(vertices, 0, n - 1, memo); 
         
     }
     

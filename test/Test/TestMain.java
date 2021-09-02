@@ -48,14 +48,14 @@ public class TestMain {
         testList.add(new Point(1,2));
         testList.add(new Point(1,4));
         testList.add(new Point(3,5));
-        testList.add(new Point(3,3));
+        testList.add(new Point(4,3));
         testList.add(new Point(3,1));
         
 //        System.out.println(bf_tessellation(testList));
         
-        Polygon testPolygon = new Polygon(100,10,10);
+        Polygon testPolygon = new Polygon(17,800,600);
         System.out.println(testPolygon.toString());
-        //System.out.println(bf_tessellation(testPolygon.getVertices()));
-        System.out.println(ea_tessellation(testPolygon.getVertices()));
+//        //System.out.println(bf_tessellation(testPolygon.getVertices()));
+//        System.out.println(ea_tessellation(testPolygon.getVertices()));
     }
 }

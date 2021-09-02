@@ -5,7 +5,10 @@
  */
 package BruteForce;
 import GUI.Point;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -13,9 +16,20 @@ import java.util.List;
  */
 public class BruteForce {
     
+    public static HashMap<Point, Point> edge = new HashMap<>();
+    
     public static double bf_tessellation(List<Point> vertices) {
         
-        return dfs(vertices, 0, vertices.size() - 1); 
+        Double ans = dfs(vertices, 0, vertices.size() - 1);
+        
+        Iterator it = edge.entrySet().iterator(); 
+        while (it.hasNext()){ 
+            Map.Entry edgePair = (Map.Entry)it.next(); 
+            System.out.println(edgePair.getKey().toString() + " -> " + edgePair.getValue().toString());
+            it.remove();
+        }
+
+        return  ans;
         
     }
     
@@ -57,13 +71,21 @@ public class BruteForce {
                     Math.pow((vertices.get(k).getyPos() - vertices.get(end).getyPos()), 2)));
             }
             
-            /**
-             * compare each sum and save the minimum to ans
-             */
-            ans = Math.min(ans, internalEdgeSum + dfs(vertices, start, k) + dfs(vertices, k, end));
+            double temp  = internalEdgeSum + dfs(vertices, start, k) + dfs(vertices, k, end);
+            if (ans > temp){
+                ans = temp;
+//                System.out.println("k: " + k + ", start: " + start + ", end: " + end);
+                
+//                if(start + 1 < k) edge.put(vertices.get(k), vertices.get(start));
+//                if(end - 1 > k) edge.put(vertices.get(k), vertices.get(end));
+//                System.out.println("start: " + vertices.get(k) + " " + vertices.get(start));
+//                System.out.println("end: " + vertices.get(k) + " " + vertices.get(end));
 
-        }
-        
+                //(n(n-3))/2
+            }
+            
+        } 
+       
         /**
          * Maybe return a list of points instead?
          * so we can use the list for calculating the sum and plotting onto 

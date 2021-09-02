@@ -25,4 +25,8 @@ public class Point {
         return yPos;
     }
     
+    public String toString() { 
+        return "(" + xPos + ", " + yPos + " )";
+    }
+    
 }
