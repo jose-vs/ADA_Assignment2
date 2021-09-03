@@ -20,6 +20,9 @@ import java.util.Random;
 public class Polygon {
     private List<Point> vertices; 
     private int xBound, yBound; 
+    private List<Edge> internalEdges; 
+    private double InternalEdgeSum;
+    
     private final Random RAND = new Random(); 
     
      /**
@@ -27,6 +30,7 @@ public class Polygon {
      */
     public Polygon() { 
         vertices = new ArrayList<>();
+        internalEdges = new ArrayList<>();
     }
     
     /**
@@ -49,15 +53,6 @@ public class Polygon {
      */
     public Polygon(List<Point> vertices){ 
         this.vertices = vertices;
-    }
-    
-    
-    public List<Point> getVertices() { 
-        return this.vertices;
-    }
-    
-    public int getNumOfVertices() { 
-        return vertices.size();
     }
     
     /**
@@ -124,6 +119,22 @@ public class Polygon {
     public void drawPolygon(Graphics g){ 
         g.setColor(Color.WHITE);     
         g.drawPolygon(getXCoords(), getYCoords(), getNumOfVertices());
+    }
+    
+    public void drawTessellation(Graphics g){ 
+        if(!this.getInternalEdges().isEmpty()) {
+            g.setColor(Color.ORANGE);     
+
+            this.internalEdges.forEach((curr) -> {
+                Edge e = (Edge)curr;
+                Point p1 = e.getStart(); 
+                Point p2 = e.getEnd();
+                System.out.println("Internal Edge" +e.toString());
+                g.drawLine(p1.getxPos(), p1.getyPos(), p2.getxPos(), p2.getyPos());
+            });
+            
+            System.out.println(this.toString());
+        }
     }
     
     /** 
@@ -244,6 +255,42 @@ public class Polygon {
         }
         
         return s; 
+    }
+
+    /**
+     * @return the internalEdges
+     */
+    public List<Edge> getInternalEdges() {
+        return internalEdges;
+    }
+
+    /**
+     * @param internalEdges the internalEdges to set
+     */
+    public void setInternalEdges(List<Edge> internalEdges) {
+        this.internalEdges = internalEdges;
+    }
+
+    /**
+     * @return the InternalEdgeSum
+     */
+    public double getInternalEdgeSum() {
+        return InternalEdgeSum;
+    }
+
+    /**
+     * @param InternalEdgeSum the InternalEdgeSum to set
+     */
+    public void setInternalEdgeSum(double InternalEdgeSum) {
+        this.InternalEdgeSum = InternalEdgeSum;
+    }
+    
+    public List<Point> getVertices() { 
+        return this.vertices;
+    }
+    
+    public int getNumOfVertices() { 
+        return vertices.size();
     }
     
 }

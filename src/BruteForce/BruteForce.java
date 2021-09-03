@@ -4,11 +4,12 @@
  * and open the template in the editor.
  */
 package BruteForce;
+import GUI.Edge;
 import GUI.Point;
-import java.util.HashMap;
+import GUI.Polygon;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 
@@ -16,39 +17,74 @@ import java.util.Map;
  */
 public class BruteForce {
     
-    public static HashMap<Point, Point> edge = new HashMap<>();
+    /**
+     * default constructor
+     * 
+     * empty as we only need the methods
+     */
+    public BruteForce() { }
     
-    public static double bf_tessellation(List<Point> vertices) {
-        
-        Double ans = dfs(vertices, 0, vertices.size() - 1);
-        
-        Iterator it = edge.entrySet().iterator(); 
-        while (it.hasNext()){ 
-            Map.Entry edgePair = (Map.Entry)it.next(); 
-            System.out.println(edgePair.getKey().toString() + " -> " + edgePair.getValue().toString());
-            it.remove();
-        }
-
-        return  ans;
-        
+    /**
+     * updates the polygons internalEdge and internalEdgeSum variables
+     * 
+     * @param p     polygon that is to be updated 
+     */
+    public void updatePolgyon(Polygon p){ 
+        List<Edge> curr = getEfficientEdges(p.getVertices());
+        p.setInternalEdges(curr);
+        p.setInternalEdgeSum(edgeSum(curr));
     }
     
-    private static double dfs(List<Point> vertices, int start, int end) { 
+    /**
+     * returns a list of minimum length internal edges based on the convex polygon 
+     * points passed through 
+     * 
+     * @param vertices          convex polygon vertices
+     * @return                  list of edge objects
+     */
+    public List<Edge> getEfficientEdges(List<Point> vertices) {
+        return dfs(vertices, 0, vertices.size() - 1);
+    }
         
-        double ans = Double.MAX_VALUE; 
+    /**
+     * 
+     * returns a list of minimum length internal edges based on the convex polygon 
+     * points passed through 
+     * 
+     * @param vertices          convex polygon vertices
+     * @param start             first vertices of the polygon
+     * @param end               last vertices of the polygon
+     * @return                  list of edge objects
+     */
+    private List<Edge> dfs(List<Point> vertices, int start, int end) { 
+        
+        /**
+         * placeholder for checking if current edge sum
+         */
+        double sum = Double.MAX_VALUE;   
+        
+        /**
+         * used for the answer returned
+         */
+        List<Edge> edge = new ArrayList<>();    
         
         /**
          * Base Case: 
-         * Return 0 if current polygon is already a 
+         * Return an empty list if current polygon is already a 
          * triangle.
          * If the difference between the end vertices and the start  vertices
          * is less than 3, there can't be any possible tessellations made
          */
         if (end - start < 3)
-            return 0; 
+            return edge; 
         
         for (int k = start + 1; k < end; k++) { 
-            double internalEdgeSum = 0; 
+            
+            /**
+             * placeholder for storing possible tessellations 
+             */
+            List<Edge> temp = new ArrayList<>();
+
             
             /**
              * Add the length of the internal edge 
@@ -56,42 +92,79 @@ public class BruteForce {
              * An internal edge can only be internal if the k vertices is either 
              * not the adjacent vertices of the start or end point of the current
              * tessellation of the polygon.
-             * 
-             * TODO: 
-             * Save points so we can show it in the GUI
              */
             if(start + 1 < k) { 
-                internalEdgeSum += Math.sqrt((
-                    Math.pow((vertices.get(k).getxPos() - vertices.get(start).getxPos()), 2) +
-                    Math.pow((vertices.get(k).getyPos() - vertices.get(start).getyPos()), 2)));
+                temp.add(new Edge(new Point(vertices.get(k).getxPos(), vertices.get(k).getyPos()), 
+                         new Point(vertices.get(start).getxPos(), vertices.get(start).getyPos())));
             }
             if(end - 1 > k) { 
-                internalEdgeSum += Math.sqrt((
-                    Math.pow((vertices.get(k).getxPos() - vertices.get(end).getxPos()), 2) +
-                    Math.pow((vertices.get(k).getyPos() - vertices.get(end).getyPos()), 2)));
+                temp.add(new Edge(new Point(vertices.get(k).getxPos(), vertices.get(k).getyPos()), 
+                        new Point(vertices.get(end).getxPos(), vertices.get(end).getyPos())));
             }
             
-            double temp  = internalEdgeSum + dfs(vertices, start, k) + dfs(vertices, k, end);
-            if (ans > temp){
-                ans = temp;
-//                System.out.println("k: " + k + ", start: " + start + ", end: " + end);
-                
-//                if(start + 1 < k) edge.put(vertices.get(k), vertices.get(start));
-//                if(end - 1 > k) edge.put(vertices.get(k), vertices.get(end));
-//                System.out.println("start: " + vertices.get(k) + " " + vertices.get(start));
-//                System.out.println("end: " + vertices.get(k) + " " + vertices.get(end));
-
-                //(n(n-3))/2
+            /**
+             * calculate left and right side of tessellated polygon
+             */
+            temp.addAll(dfs(vertices, start, k));
+            temp.addAll(dfs(vertices, k, end));
+            
+            /**
+             * Checks if the current edge sum is less than the previous sum 
+             * if is less then overwrite the current edge object
+             */
+            double edgeSum = edgeSum(temp);          
+            if (sum > edgeSum){  
+                sum = edgeSum;
+                edge = temp;
             }
             
         } 
        
-        /**
-         * Maybe return a list of points instead?
-         * so we can use the list for calculating the sum and plotting onto 
-         * an interface
-         */
+        return edge; 
+    }
+    
+    /**
+     * Calculates the sum of all the edge object lengths
+     * 
+     * @param e     A list containing edge objects
+     * @return      sum 
+     */
+    public double edgeSum(List<Edge> e){ 
+        double sum = 0; 
         
-        return ans; 
+        sum =
+            e.stream()
+            .map((curr) -> 
+            curr.length()).reduce(sum, (accumulator, _item) -> accumulator + _item);
+        
+        return sum;
+    }
+    
+    /**
+     * For Testing
+     */
+    public static void main(String[] args) {
+        BruteForce bf = new BruteForce();
+        List<Point> testList = new ArrayList<>();
+//        testList.add(new Point(1,2));
+//        testList.add(new Point(1,4));
+//        testList.add(new Point(3,5));
+//        testList.add(new Point(4,3));
+//        testList.add(new Point(3,1));
+        
+        testList.add(new Point(1,1));
+        testList.add(new Point(0,4));
+        testList.add(new Point(3,5));
+        testList.add(new Point(4,4));
+        testList.add(new Point(4,2));
+        testList.add(new Point(2,0));
+        
+        
+        List<Edge> e = bf.getEfficientEdges(testList); 
+        Iterator it = e.iterator();
+        while (it.hasNext()){ 
+            Edge curr = (Edge) it.next(); 
+            System.out.println(curr.toString());
+        } 
     }
 }

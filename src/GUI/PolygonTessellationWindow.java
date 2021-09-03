@@ -5,6 +5,7 @@
  */
 package GUI;
 
+import BruteForce.BruteForce;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -22,6 +23,7 @@ import javax.swing.JTextField;
 public class PolygonTessellationWindow extends JPanel{
     public final int PANEL_WIDTH = 1080; public final int PANEL_HEIGHT = 720;
     public Polygon polygon; 
+    public BruteForce bf; 
     public int numOfVertices;
     
     public JButton generatePolygon, tessellatePolygon; 
@@ -35,6 +37,7 @@ public class PolygonTessellationWindow extends JPanel{
         setLayout(null);
         
         polygon = new Polygon();
+        bf = new BruteForce();
         
         generatePolygon = new JButton("Generate Polygon"); 
         generatePolygon.setBounds(PANEL_WIDTH - 275,25,250,25);
@@ -52,7 +55,7 @@ public class PolygonTessellationWindow extends JPanel{
         
         tessellatePolygon = new JButton("Tessellate"); 
         tessellatePolygon.setBounds(PANEL_WIDTH - 275,105,250,25);
-        tessellatePolygon.addActionListener(new GeneratePolygonListener());
+        tessellatePolygon.addActionListener(new TessellationListener());
         add(tessellatePolygon);
           
     }
@@ -60,9 +63,11 @@ public class PolygonTessellationWindow extends JPanel{
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(polygon.getNumOfVertices() >= 3){ 
+        if(polygon.getNumOfVertices() >= 3){
             polygon.drawPolygon(g);
-        }
+            polygon.drawTessellation(g);
+        } 
+     
     }
     
     public class GeneratePolygonListener implements ActionListener{ 
@@ -71,9 +76,11 @@ public class PolygonTessellationWindow extends JPanel{
         public void actionPerformed(ActionEvent ae) {           
             
             try { 
+                
                 numOfVertices = Integer.parseInt(textBox.getText());
-                polygon.createPolygon(numOfVertices, 500, 500);
+                polygon.createPolygon(numOfVertices, 600, 600);
                 repaint();
+                
             } catch (NumberFormatException o){ 
                 //tell users to enter a number
             } catch (IndexOutOfBoundsException o){ 
@@ -81,6 +88,18 @@ public class PolygonTessellationWindow extends JPanel{
             }
         }
         
+    }
+    
+    public class TessellationListener implements ActionListener { 
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if(polygon.getNumOfVertices() >= 3){ 
+                bf.updatePolgyon(polygon);
+                
+                repaint();
+            }
+        }
     }
     
     
