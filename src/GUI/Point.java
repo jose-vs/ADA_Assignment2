@@ -24,5 +24,9 @@ public class Point {
     public int getyPos() {
         return yPos;
     }
+
+    public String toString() {
+        return "<" + xPos + ", " + yPos + ">";
+    }
     
 }
