@@ -6,6 +6,7 @@
 package GUI;
 
 import BruteForce.BruteForce;
+import ExactApproach.ExactApproach;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -24,9 +25,10 @@ public class PolygonTessellationWindow extends JPanel{
     public final int PANEL_WIDTH = 1080; public final int PANEL_HEIGHT = 720;
     public Polygon polygon; 
     public BruteForce bf; 
+    public ExactApproach ea;
     public int numOfVertices;
     
-    public JButton generatePolygon, tessellatePolygon; 
+    public JButton generatePolygon, BruteForce, ExactApproach; 
     public JTextField textBox; 
     public JLabel inputLabel;
 
@@ -38,6 +40,7 @@ public class PolygonTessellationWindow extends JPanel{
         
         polygon = new Polygon();
         bf = new BruteForce();
+        ea = new ExactApproach();
         
         generatePolygon = new JButton("Generate Polygon"); 
         generatePolygon.setBounds(PANEL_WIDTH - 275,25,250,25);
@@ -53,10 +56,15 @@ public class PolygonTessellationWindow extends JPanel{
         textBox.setBounds(PANEL_WIDTH - 175,65,150,25);
         add(textBox);
         
-        tessellatePolygon = new JButton("Tessellate"); 
-        tessellatePolygon.setBounds(PANEL_WIDTH - 275,105,250,25);
-        tessellatePolygon.addActionListener(new TessellationListener());
-        add(tessellatePolygon);
+        BruteForce = new JButton("Brute Force"); 
+        BruteForce.setBounds(PANEL_WIDTH - 275,105,250,25);
+        BruteForce.addActionListener(new TessellationListener());
+        add(BruteForce);
+        
+        ExactApproach = new JButton("Exact Approach"); 
+        ExactApproach.setBounds(PANEL_WIDTH - 275,145,250,25);
+        ExactApproach.addActionListener(new TessellationListener());
+        add(ExactApproach);
           
     }
     
@@ -95,7 +103,11 @@ public class PolygonTessellationWindow extends JPanel{
         @Override
         public void actionPerformed(ActionEvent ae) {
             if(polygon.getNumOfVertices() >= 3){ 
-                bf.updatePolgyon(polygon);
+                
+                if(ae.getActionCommand().equals("Brute Force"))
+                    bf.updatePolgyon(polygon);
+                else if (ae.getActionCommand().equals("Exact Approach"))
+                    ea.updatePolgyon(polygon);
                 
                 repaint();
             }

@@ -129,11 +129,12 @@ public class Polygon {
                 Edge e = (Edge)curr;
                 Point p1 = e.getStart(); 
                 Point p2 = e.getEnd();
-                System.out.println("Internal Edge" +e.toString());
+//                System.out.println("Internal Edge" +e.toString());
                 g.drawLine(p1.getxPos(), p1.getyPos(), p2.getxPos(), p2.getyPos());
             });
             
-            System.out.println(this.toString());
+//            System.out.println(this.toString());
+            System.out.println("Sum: " + this.InternalEdgeSum);
         }
     }
     
