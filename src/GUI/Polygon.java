@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package GUI;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,57 +18,155 @@ import java.util.Random;
  * @author jcvsa
  */
 public class Polygon {
-    private List<Point> vertices; 
-    
-    private double internalEdgeSum; 
-    private HashMap<Point,Point> internalEdges;
-    
-    private final Random RAND = new Random(); 
-    
-    public Polygon(int numOfVertices, int height, int width) { 
-        createPolygon(numOfVertices, height, width); 
+    private List<Point> vertices;
+    private int xBound, yBound;
+    private List<Edge> internalEdges;
+    private double InternalEdgeSum;
+
+    private final Random RAND = new Random();
+
+    /**
+     * Default Constructor
+     */
+    public Polygon() {
+        vertices = new ArrayList<>();
+        internalEdges = new ArrayList<>();
     }
-    
-    public Polygon(List<Point> vertices){ 
+
+    /**
+     * Constructor
+     * Creates a new randomized polygon based on the paramaters
+     *
+     * @param numOfVertices         number of vertices
+     * @param height                y bound for the polygon
+     * @param width                 x bound for the polygon
+     */
+    public Polygon(int numOfVertices, int height, int width) {
+        createPolygon(numOfVertices, height, width);
+    }
+
+    /**
+     * Constructor
+     * sets the local list of vertices
+     *
+     * @param vertices
+     */
+    public Polygon(List<Point> vertices){
         this.vertices = vertices;
     }
-    
-    public List<Point> getVertices() { 
-        return this.vertices;
+
+    /**
+     * retrieves an int array of the x coords from the vertices list
+     *
+     * @return              xCoords array
+     */
+    public int[] getXCoords() {
+
+        /**
+         * only retrieve the list if vertices is not empty
+         */
+        if(!vertices.isEmpty()) {
+            int xCoords[] = new int[vertices.size()];
+
+            Iterator it = vertices.iterator();
+            int index = 0;
+
+            while (it.hasNext()){
+                Point p = (Point) it.next();
+                xCoords[index] = p.getxPos();
+                index++;
+            }
+
+            return xCoords;
+
+        } else
+            return null;
     }
-    
-    
-    
-    /** 
-     * Randomly generate points for a convex polygon 
-     * 
+
+    /**
+     * retrieves an int array of the y coords from the vertices list
+     *
+     * @return              yCoords array
+     */
+    public int[] getYCoords() {
+
+        /**
+         * only retrieve the list if vertices is not empty
+         */
+        if(!vertices.isEmpty()) {
+            int[] yCoords = new int[vertices.size()];
+
+            Iterator it = vertices.iterator();
+            int index = 0;
+
+            while (it.hasNext()){
+                Point p = (Point) it.next();
+                yCoords[index] = p.getyPos();
+                index++;
+            }
+
+            return yCoords;
+
+        } else
+            return null;
+    }
+
+    /**
+     * draws the polygon without tessellations
+     *
+     * @param g
+     */
+    public void drawPolygon(Graphics g){
+        g.setColor(Color.WHITE);
+        g.drawPolygon(getXCoords(), getYCoords(), getNumOfVertices());
+    }
+
+    public void drawTessellation(Graphics g){
+        if(!this.getInternalEdges().isEmpty()) {
+            g.setColor(Color.ORANGE);
+
+            this.internalEdges.forEach((curr) -> {
+                Edge e = (Edge)curr;
+                Point p1 = e.getStart();
+                Point p2 = e.getEnd();
+                System.out.println("Internal Edge" +e.toString());
+                g.drawLine(p1.getxPos(), p1.getyPos(), p2.getxPos(), p2.getyPos());
+            });
+
+            System.out.println(this.toString());
+        }
+    }
+
+    /**
+     * Randomly generate points for a convex polygon
+     *
      * @param numOfVertices     the number of vertices to generate
      * @param height            y bound for the randomly generated point
      * @param width             x bound for the randomly generated point
      */
-    public void createPolygon(int numOfVertices, int height, int width) { 
-        List<Integer> xPool = new ArrayList<>(numOfVertices); 
-        List<Integer> yPool = new ArrayList<>(numOfVertices); 
-        
-        for (int i = 0; i < numOfVertices; i++){ 
-            xPool.add(RAND.nextInt(width)); 
+    public void createPolygon(int numOfVertices, int height, int width) {
+        List<Integer> xPool = new ArrayList<>(numOfVertices);
+        List<Integer> yPool = new ArrayList<>(numOfVertices);
+
+        for (int i = 0; i < numOfVertices; i++){
+            xPool.add(RAND.nextInt(width));
             yPool.add(RAND.nextInt(height));
         }
-        
-        Collections.sort(xPool); 
+
+        Collections.sort(xPool);
         Collections.sort(yPool);
-        
-        int minX = xPool.get(0); 
-        int maxX = xPool.get(numOfVertices - 1); 
-        int minY = yPool.get(0); 
-        int maxY = yPool.get(numOfVertices - 1); 
-        
+
+        int minX = xPool.get(0);
+        int maxX = xPool.get(numOfVertices - 1);
+        int minY = yPool.get(0);
+        int maxY = yPool.get(numOfVertices - 1);
+
         //extract vector componenets
         List<Integer> xVec = new ArrayList<>(numOfVertices);
         List<Integer> yVec = new ArrayList<>(numOfVertices);
-        
+
         int lastTop = minX, lastBot = minX;
-        
+
         for (int i = 1; i < numOfVertices - 1; i++) {
             int x = xPool.get(i);
 
@@ -79,7 +178,7 @@ public class Polygon {
                 lastBot = x;
             }
         }
-        
+
         xVec.add(maxX - lastTop);
         xVec.add(lastBot - maxX);
 
@@ -99,19 +198,19 @@ public class Polygon {
 
         yVec.add(maxY - lastLeft);
         yVec.add(lastRight - maxY);
-        
-        //randomly pair up x and y 
+
+        //randomly pair up x and y
         Collections.shuffle(yVec);
-        
+
         List<Point> vec = new ArrayList<>(numOfVertices);
-        
+
         for (int i = 0; i < numOfVertices; i++) {
             vec.add(new Point(xVec.get(i), yVec.get(i)));
         }
-        
+
         // Sort the vectors by angle
         Collections.sort(vec, Comparator.comparingDouble(v -> Math.atan2((double)v.getyPos(), (double)v.getxPos())));
-        
+
         // Lay them end-to-end
         int x = 0, y = 0;
         int minPolygonX = 0;
@@ -136,25 +235,62 @@ public class Polygon {
             Point p = points.get(i);
             points.set(i, new Point(p.getxPos() + xShift, p.getyPos() + yShift));
         }
-        
+
         //set vertices with new points
         this.vertices = points;
     }
-    
-    public String toString(){ 
+
+    @Override
+    public String toString(){
         String s = "";
         int index = 0;
-        
-        if (vertices.size() == 0) return "Polygon not Initialized";
-        
-        Iterator it = vertices.iterator(); 
-        while (it.hasNext()) { 
-            Point p = (Point) it.next(); 
+
+        if (vertices.isEmpty() || vertices == null) return "Polygon not Initialized";
+
+        Iterator it = vertices.iterator();
+        while (it.hasNext()) {
+            Point p = (Point) it.next();
             s += index + ": (" + p.getxPos() + ", " + p.getyPos() + ") \n";
             index++;
         }
-        
-        return s; 
+
+        return s;
+    }
+
+    /**
+     * @return the internalEdges
+     */
+    public List<Edge> getInternalEdges() {
+        return internalEdges;
+    }
+
+    /**
+     * @param internalEdges the internalEdges to set
+     */
+    public void setInternalEdges(List<Edge> internalEdges) {
+        this.internalEdges = internalEdges;
+    }
+
+    /**
+     * @return the InternalEdgeSum
+     */
+    public double getInternalEdgeSum() {
+        return InternalEdgeSum;
+    }
+
+    /**
+     * @param InternalEdgeSum the InternalEdgeSum to set
+     */
+    public void setInternalEdgeSum(double InternalEdgeSum) {
+        this.InternalEdgeSum = InternalEdgeSum;
+    }
+
+    public List<Point> getVertices() {
+        return this.vertices;
+    }
+
+    public int getNumOfVertices() {
+        return vertices.size();
     }
     
 }

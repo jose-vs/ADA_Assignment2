@@ -1,11 +1,14 @@
 package BruteForce;
 
+import GUI.Edge;
 import GUI.Point;
 import GUI.PointLine;
+import GUI.Polygon;
 
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -18,7 +21,44 @@ public class BruteForce {
         this.interiorPoints = points;
     }
 
-    public void bruteForce() {
+    public BruteForce(Polygon p) {
+        Point[] pointsConvert = new Point[p.getNumOfVertices()];
+        int index = 0;
+        for (Point point : p.getVertices()) {
+            pointsConvert[index] = point;
+            index++;
+        }
+        this.interiorPoints = pointsConvert;
+    }
+
+    public void updatePolgyon(Polygon p){
+        ArrayList<PointLine> edges = bruteForce();
+        List<Edge> current = new ArrayList<>();
+        for (PointLine pointLine: edges) {
+            current.add(new Edge(pointLine.getPointA(), pointLine.getPointB()));
+        }
+        p.setInternalEdges(current);
+        p.setInternalEdgeSum(edgeSum(current));
+    }
+
+    /**
+     * Calculates the sum of all the edge object lengths
+     *
+     * @param e     A list containing edge objects
+     * @return      sum
+     */
+    public double edgeSum(List<Edge> e){
+        double sum = 0;
+
+        sum =
+                e.stream()
+                        .map((curr) ->
+                                curr.length()).reduce(sum, (accumulator, _item) -> accumulator + _item);
+
+        return sum;
+    }
+
+    public ArrayList<PointLine> bruteForce() {
         //assume points are in order that they connect (assume edges) - go up by 2
         //find all distances
         //find all possible combinations
@@ -88,6 +128,8 @@ public class BruteForce {
                     possibleCombinations.get(minimumID).get(j).getPointB());
             System.out.println("\n");
         }
+
+        return possibleCombinations.get(minimumID);
 
     }
 
