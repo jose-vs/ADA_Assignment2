@@ -4,12 +4,10 @@ import GUI.Edge;
 import GUI.Point;
 import GUI.Polygon;
 
+import javax.sound.sampled.Line;
 import java.awt.geom.Line2D;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -49,7 +47,8 @@ public class GreedyMethod {
 
     public void greedyNew(List<Point> pointsGiven) {
         ArrayList indexesTickedOff = new ArrayList<>();
-        ArrayList<Distance>[] distances = new ArrayList[pointsGiven.size()];
+        List<Distance>[] distances = new ArrayList[pointsGiven.size()];
+        ArrayList<Line2D> lines = new ArrayList<>();
 
         //initialise distances
         for (int b = 0; b < distances.length; b++) {
@@ -76,16 +75,25 @@ public class GreedyMethod {
                     if (index >= pointsGiven.size() - 1) {
                         index = 0;
                     }
-                    if (notContain(pointsGiven.get(j), index, distances, pointsGiven)) {
-                        double distance = Math.sqrt(Math.pow((pointsGiven.get(j).getxPos() - pointsGiven.get(j).getyPos()), 2) + Math.pow((pointsGiven.get(index).getxPos() - pointsGiven.get(index).getyPos()), 2));
-                        //add to both point j -> index and index -> j so it won't have to be calculated again
-                        distances[j].add(new Distance(index, distance));
-                        distances[index].add(new Distance(j, distance));
+                    if (j != index) {
+                        if (notContain(pointsGiven.get(j), index, distances, pointsGiven)) {
+                            double distance = Math.sqrt(Math.pow((pointsGiven.get(j).getxPos() - pointsGiven.get(j).getyPos()), 2) + Math.pow((pointsGiven.get(index).getxPos() - pointsGiven.get(index).getyPos()), 2));
+                            //add to both point j -> index and index -> j so it won't have to be calculated again
+                            distances[j].add(new Distance(index, distance));
+                            distances[index].add(new Distance(j, distance));
+                        }
                     }
                     index++;
                 }
 
                 //find the minimum distance between the current point being checked and other points
+                Collections.sort(distances[j], new Comparator<Distance>() {
+                    @Override
+                    public int compare(Distance o1, Distance o2) {
+                        return o1.getDistance().compareTo(o2.getDistance());
+                    }
+                });
+
                 for (Distance dist: distances[j]) {
                     if (dist.getDistance() < min) {
                         min = dist.getDistance();
@@ -97,6 +105,7 @@ public class GreedyMethod {
                 Edge addEdge = new Edge(pointsGiven.get(j), pointsGiven.get(minIndex));
                 if (!polygonEdges.contains(addEdge)) {
                     edges.add(addEdge);
+                    lines.add(new Line2D.Double(pointsGiven.get(j).getxPos(), pointsGiven.get(j).getyPos(), pointsGiven.get(minIndex).getxPos(), pointsGiven.get(minIndex).getyPos()));
                 }
 
                 //add a point to indexesTickedOff if its definitely part of a triangle
@@ -109,11 +118,12 @@ public class GreedyMethod {
                 else if (j == 0 && minIndex == pointsGiven.size() - 2) {
                     indexesTickedOff.add(minIndex + 1);
                 }
+
             }
         }
     }
 
-    public boolean notContain(Point j, int index, ArrayList<Distance>[] distances, List<Point> pointsGiven) {
+    public boolean notContain(Point j, int index, List<Distance>[] distances, List<Point> pointsGiven) {
         for (Distance d: distances[index]) {
             if (pointsGiven.get(d.getIndexB()).getxPos() == j.getxPos() && pointsGiven.get(d.getIndexB()).getyPos() == j.getyPos()) {
                 return false;

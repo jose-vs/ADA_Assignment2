@@ -95,6 +95,7 @@ public class PolygonTessellationWindow extends JPanel{
                 
                 numOfVertices = Integer.parseInt(textBox.getText());
                 polygon.createPolygon(numOfVertices, 600, 600);
+                polygon.setInternalEdges(new ArrayList<>());
                 repaint();
                 
             } catch (NumberFormatException o){ 
