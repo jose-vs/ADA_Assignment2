@@ -34,7 +34,6 @@ public class BruteForce {
         List<Edge> curr = getEfficientEdges(p.getVertices());
         p.setInternalEdges(curr);
         p.setInternalEdgeSum(edgeSum(curr));
-        System.out.println("BRUTE FORCE");
     }
 
     /**

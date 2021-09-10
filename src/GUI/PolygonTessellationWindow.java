@@ -33,7 +33,7 @@ public class PolygonTessellationWindow extends JPanel{
     
     public JButton generatePolygon, BruteForce, GreedyApproach, ExactApproach;
     public JTextField textBox; 
-    public JLabel inputLabel;
+    public JLabel inputLabel, sumLabel;
 
     
     public PolygonTessellationWindow() { 
@@ -73,6 +73,11 @@ public class PolygonTessellationWindow extends JPanel{
         ExactApproach.setBounds(PANEL_WIDTH - 275,185,250,25);
         ExactApproach.addActionListener(new TessellationListener());
         add(ExactApproach);
+        
+        sumLabel = new JLabel("Sum: "); 
+        sumLabel.setForeground(Color.WHITE);
+        sumLabel.setBounds(PANEL_WIDTH - 275,225,250,25);
+        add(sumLabel);
           
     }
     
@@ -82,6 +87,10 @@ public class PolygonTessellationWindow extends JPanel{
         if(polygon.getNumOfVertices() >= 3){
             polygon.drawPolygon(g);
             polygon.drawTessellation(g);
+            if(!polygon.getInternalEdges().isEmpty()) {
+                polygon.drawTessellation(g);
+                sumLabel.setText("Sum: " + polygon.getInternalEdgeSum());
+            }
         } 
      
     }

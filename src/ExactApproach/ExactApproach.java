@@ -35,7 +35,6 @@ public class ExactApproach {
         List<Edge> curr = getEfficientEdges(p.getVertices());
         p.setInternalEdges(curr);
         p.setInternalEdgeSum(edgeSum(curr));
-        System.out.println("EXACT APPROACH");
     }
 
     public List<Edge> getEfficientEdges(List<Point> vertices) {
