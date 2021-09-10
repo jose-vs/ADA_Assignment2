@@ -7,11 +7,14 @@ package GUI;
 
 import BruteForce.BruteForce;
 import ExactApproach.ExactApproach;
+import GreedyMethod.GreedyMethod;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,7 +31,7 @@ public class PolygonTessellationWindow extends JPanel{
     public ExactApproach ea;
     public int numOfVertices;
     
-    public JButton generatePolygon, BruteForce, ExactApproach; 
+    public JButton generatePolygon, BruteForce, GreedyApproach, ExactApproach;
     public JTextField textBox; 
     public JLabel inputLabel;
 
@@ -60,9 +63,14 @@ public class PolygonTessellationWindow extends JPanel{
         BruteForce.setBounds(PANEL_WIDTH - 275,105,250,25);
         BruteForce.addActionListener(new TessellationListener());
         add(BruteForce);
+
+        GreedyApproach = new JButton("Greedy Approach");
+        GreedyApproach.setBounds(PANEL_WIDTH - 275,145,250,25);
+        GreedyApproach.addActionListener(new TessellationListener());
+        add(GreedyApproach);
         
         ExactApproach = new JButton("Exact Approach"); 
-        ExactApproach.setBounds(PANEL_WIDTH - 275,145,250,25);
+        ExactApproach.setBounds(PANEL_WIDTH - 275,185,250,25);
         ExactApproach.addActionListener(new TessellationListener());
         add(ExactApproach);
           
@@ -92,7 +100,7 @@ public class PolygonTessellationWindow extends JPanel{
             } catch (NumberFormatException o){ 
                 //tell users to enter a number
             } catch (IndexOutOfBoundsException o){ 
-                //tell teh user to enter a value <= 3
+                //tell the user to enter a value <= 3
             }
         }
         
@@ -108,6 +116,10 @@ public class PolygonTessellationWindow extends JPanel{
                     bf.updatePolgyon(polygon);
                 else if (ae.getActionCommand().equals("Exact Approach"))
                     ea.updatePolgyon(polygon);
+                else if (ae.getActionCommand().equals("Greedy Approach")) {
+                    GreedyMethod greedyMethod = new GreedyMethod(polygon);
+                    greedyMethod.updateGreedy(polygon);
+                }
                 
                 repaint();
             }
